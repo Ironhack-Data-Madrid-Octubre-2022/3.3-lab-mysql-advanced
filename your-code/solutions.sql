@@ -32,7 +32,7 @@ order by total_profit desc limit 3;
 #CHALLENGE 2: STEP 1
 
 create temporary table step1
-select t.title_id,ta.au_id,(t.price * s.qty * t.royalty / 100 * ta.royaltyper/100) as total_royalty
+select t.title_id,ta.au_id,(t.price * s.qty * t.royalty / 100 * ta.royaltyper/100) as sales_royalty
 from titles as t
 left join titleauthor as ta
 on t.title_id=ta.title_id
@@ -42,23 +42,15 @@ on ta.title_id=s.title_id;
 #CHALLENGE 2: STEP 2
 
 create temporary table step2
-select ta.au_id,t.title_id,sum(t.price * s.qty * t.royalty / 100 * ta.royaltyper/100) as total_royalty
-from titleauthor as ta
-left join titles as t
-on ta.title_id=t.title_id
-left join sales as s
-on ta.title_id=s.title_id
+select ta.au_id,t.title_id,sum(tsales_royalty) as total_royalty
+from step1
 group by ta.au_id, t.title_id;
 
 #CHALLENGE 2: STEP 3
 
 create temporary table step3
 select ta.au_id,sum((t.price * s.qty * t.royalty / 100 * ta.royaltyper/100)+t.advance) as total_profit
-from titleauthor as ta
-left join titles as t
-on ta.title_id=t.title_id
-left join sales as s
-on ta.title_id=s.title_id
+from step2
 group by ta.au_id
 order by total_profit desc limit 3;
 
@@ -74,6 +66,3 @@ left join sales as s
 on ta.title_id=s.title_id
 group by ta.au_id
 order by total_profit desc limit 3;
-
-
-
