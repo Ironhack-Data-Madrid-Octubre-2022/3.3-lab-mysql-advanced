@@ -1,6 +1,9 @@
 Challenge 1 
 
-SELECT t.title_id,a.au_id, 
+
+Step1
+
+SELECT t.title_id as Title_ID,a.au_id as Author_ID, 
 t.price * s.qty * t.royalty / 100 * ta.royaltyper / 100 AS sales_royalty
 FROM titles t
 LEFT JOIN titleauthor ta
@@ -12,9 +15,9 @@ on t.title_id=s.title_id
 where t.price is not null;
 
 
-Challenge 2
+Step2
 
-SELECT t.title_id,a.au_id, 
+SELECT t.title_id as Title_ID,a.au_id Author_ID, 
 sum(t.price * s.qty * t.royalty / 100 * ta.royaltyper / 100) AS sales_royalty
 FROM titles t
 LEFT JOIN titleauthor ta
@@ -27,9 +30,9 @@ where t.price is not null
 group by a.au_id, t.title_id;
 
 
-Challenge 3
+Step3
 
-SELECT t.title_id,a.au_id, 
+SELECT a.au_id Author_ID, 
 advance+sum(t.price * s.qty * t.royalty / 100 * ta.royaltyper / 100) AS Profit
 FROM titles t
 LEFT JOIN titleauthor ta
@@ -47,7 +50,9 @@ group by a.au_id, t.title_id;
 
 
 ALTERNATIVE
-Challenge 1 
+Challenge 2
+
+Step1 
 
 CREATE TEMPORATY TABLE CHAL1 
 SELECT t.title_id,a.au_id, 
@@ -62,22 +67,24 @@ on t.title_id=s.title_id
 where t.price is not null;
 
 
-Challenge 2
+Step2
 
 create temporary table chal2
 SELECT title_id,au_id, 
 sum(sales_royalty) as agr_royalty
 from chal1
-group by title_id,au_id
+group by title_id,au_id;
 
-Challenge 3
+Step3
 
-select au_id, advance+agr_royalty from chal2
+select au_id, sum(advance+agr_royalty) as profit from chal2
 LEFT JOIN titles t
 ON chal2.title_id=t.title_id
+group by au_id
+order by profit desc
+limit 3;
 
-
-Challenge 4
+Challenge 2
 
 from sqlalchemy import create_engine
 import pandas as pd
