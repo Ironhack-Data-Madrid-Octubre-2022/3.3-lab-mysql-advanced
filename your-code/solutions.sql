@@ -49,3 +49,13 @@ on t.title_id=ta.title_id
 left join sales as s
 on  ta.title_id=s.title_id;
 ---
+CREATE TEMPORARY TABLE forstep3
+SELECT title_id, au_id, SUM(sales_royalty) AS thesales FROM forstep2
+GROUP BY au_id, title_id
+---
+select au_id, SUM(thesales + titles.advance) AS SUMA FROM forstep3
+LEFT JOIN titles ON forstep3.title_id=titles.title_id
+GROUP BY au_id
+ORDER BY SUMA DESC
+LIMIT 3
+---
