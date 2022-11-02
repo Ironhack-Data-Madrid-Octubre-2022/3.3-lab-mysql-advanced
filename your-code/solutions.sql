@@ -32,19 +32,23 @@ group by a.au_id, t.title_id;
 
 Step3
 
-SELECT a.au_id Author_ID, 
-advance+sum(t.price * s.qty * t.royalty / 100 * ta.royaltyper / 100) AS Profit
+select au_id, sum(advance+sales_royalty) as profit
+from 
+(select a.au_id, 
+ advance, t.price * s.qty * t.royalty / 100 * ta.royaltyper / 100 aS sales_royalty
 FROM titles t
-LEFT JOIN titleauthor ta
+left JOIN titleauthor ta
 on ta.title_id=t.title_id
 LEFT JOIN authors a
 on a.au_id=ta.au_id
 LEFT JOIN sales s
 on t.title_id=s.title_id
 where t.price is not null
-group by a.au_id, t.title_id;
-
-
+group by a.au_id,t.title_id
+order by a.au_id desc) as doble
+group by au_id
+order by profit desc
+limit 3;
 
 
 
@@ -77,14 +81,28 @@ group by title_id,au_id;
 
 Step3
 
-select au_id, sum(advance+agr_royalty) as profit from chal2
-LEFT JOIN titles t
-ON chal2.title_id=t.title_id
+create temporary table cruce 
+select a.au_id, 
+ advance, t.price * s.qty * t.royalty / 100 * ta.royaltyper / 100 aS sales_royalty
+FROM titles t
+left JOIN titleauthor ta
+on ta.title_id=t.title_id
+LEFT JOIN authors a
+on a.au_id=ta.au_id
+LEFT JOIN sales s
+on t.title_id=s.title_id
+where t.price is not null
+group by a.au_id,t.title_id
+order by a.au_id desc
+
+select au_id, sum(advance+sales_royalty) as profit
+from cruce
 group by au_id
 order by profit desc
 limit 3;
 
-Challenge 2
+
+Challenge 3
 
 from sqlalchemy import create_engine
 import pandas as pd
