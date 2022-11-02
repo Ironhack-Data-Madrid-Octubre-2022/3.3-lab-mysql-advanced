@@ -59,3 +59,9 @@ GROUP BY au_id
 ORDER BY SUMA DESC
 LIMIT 3
 ---
+create table most_profiting_authors
+select au_id, SUM(thesales + titles.advance) AS SUMA FROM forstep3
+left join titles on forstep3.title_id=titles.title_id
+group by au_id
+order by suma desc
+limit 3
