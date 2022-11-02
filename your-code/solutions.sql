@@ -30,27 +30,29 @@ group by title_id, au_id;
 
 -- Step 3 --
 
-select au_id, sum(sales_royalty)
+select au_id, sum(sales_royalty + advance) as Profits
 from nt1
 group by au_id
-order by sales_royalty desc limit 3;
+order by Profits desc limit 3;
 
 -- Challenge 2 - Alternative Solution
 
 create temporary table nt2
-select au_id, sum(sales_royalty)
+select au_id, sum(sales_royalty + advance) as Profits
 from nt1
 group by au_id
-order by sales_royalty desc limit 3;
+order by Profits desc limit 3;
+
+select * from nt2;
 
 
 -- Challenge 3 
 
 
 create table if not exists most_profiting_authors
-select au_id, sum(sales_royalty)
+select au_id, sum(sales_royalty + advance) as Profits
 from nt1
 group by au_id
-order by sales_royalty desc;
+order by Profits desc;
 
 select * from most_profiting_authors;
