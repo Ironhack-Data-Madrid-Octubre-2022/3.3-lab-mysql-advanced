@@ -135,3 +135,5 @@ ON chal2.title_id=t.title_id
 '''
 
 df1=pd.read_sql(query,cursor)
+
+df1.to_sql(name='most_profiting_authors', con=cursor, if_exists='replace', index=False)
